@@ -1,4 +1,3 @@
-# TODO send SMS when increase in spots available
 import myTime, constants, private
 from api import get_bearer_token, get_available_appointments
 from myEmail import Email
