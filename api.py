@@ -32,3 +32,4 @@ def get_bearer_token():
   r = requests.put(LOGIN_ENDPOINT, json=LOGIN_JSON)
   bearer_token = r.headers["Authorization"]
   return bearer_token
+  

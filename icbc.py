@@ -3,7 +3,7 @@ from api import get_bearer_token, get_available_appointments
 from myEmail import Email
 import time
 from logger import Logger
-import json
+from resultParser import ResultParser
 
 def main():
   overview_logger = Logger(myTime.ymd_format(myTime.now()))
@@ -16,12 +16,11 @@ def main():
       overview_logger.log("Refresh Login")
       bearer_token = get_bearer_token()
     elif code == 200:
-      json_value = json.loads(text)
-      count = len(json_value)
+      count = ResultParser.get_num_appointments(text)
       overview_logger.log(f"Appointments Available: {count}")
       if count > last_count:
         details_logger.log(text)
-        Email.message(private.RECEIVER_EMAILS, "ICBC Appointments Available", f"There are {count} appointments available.")
+        Email.message(private.RECEIVER_EMAILS, "ICBC Appointments Available", text)
       last_count = count
     else:
       overview_logger.log(f"Unknown Error, status: {code}, reason: {reason}")
@@ -31,4 +30,3 @@ def main():
   
 if __name__ == "__main__":
   main()
-

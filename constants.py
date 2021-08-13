@@ -1,4 +1,6 @@
-
+POSITION_LOOKUP = {
+  9: 'Point Grey'
+}
 SLEEP_TIME = 30
 
 ignoreReserveTime = False

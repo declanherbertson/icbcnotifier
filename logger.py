@@ -7,3 +7,4 @@ class Logger:
   def log(self, message):
     with open(f"{self.log_name}.txt", "a") as file:
       file.write(f"{myTime.timestamp()} :: {message}\n")
+      
