@@ -4,10 +4,12 @@ from myEmail import Email
 import time
 from logger import Logger
 from resultParser import ResultParser
+from notify import Notify
 
 def main():
   overview_logger = Logger(myTime.ymd_format(myTime.now()))
   details_logger = Logger(f"details-{myTime.ymd_format(myTime.now())}")
+  notifier = Notify()
   last_count = 0
   bearer_token = ''
   while (True):
@@ -20,7 +22,7 @@ def main():
       overview_logger.log(f"Appointments Available: {count}")
       if count > last_count:
         details_logger.log(text)
-        Email.message(private.RECEIVER_EMAILS, "ICBC Appointments Available", text)
+        Email.message(notifier.get_email_list(), "ICBC Appointments Available", text)
       last_count = count
     else:
       overview_logger.log(f"Unknown Error, status: {code}, reason: {reason}")

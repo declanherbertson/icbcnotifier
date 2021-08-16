@@ -14,11 +14,10 @@ class Email:
 
       email_text = """\
 From: %s
-To: %s
 Subject: %s
 
 %s
-      """ % (private.SENDER_EMAIL, ", ".join(to), subject, Email.build_body(text))
+      """ % (private.SENDER_EMAIL, subject, Email.build_body(text))
 
       server.sendmail(private.SENDER_EMAIL, to, email_text)
 
