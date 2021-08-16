@@ -1,5 +1,9 @@
 POSITION_LOOKUP = {
-  9: 'Point Grey'
+  9: 'Point Grey',
+  275: 'Kingsway',
+  8: 'North Vancouver',
+  2: 'Burnaby',
+  274: 'Wayburne Drive'
 }
 SLEEP_TIME = 30
 
