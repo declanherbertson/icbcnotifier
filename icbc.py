@@ -22,10 +22,11 @@ def main():
       overview_logger.log(f"Appointments Available: {count}")
       if count > last_count:
         details_logger.log(text)
-        Email.message(notifier.get_email_list(), "ICBC Appointments Available", text)
+        Email.appointment_message(notifier.get_email_list(), "ICBC Appointments Available", text)
       last_count = count
     else:
       overview_logger.log(f"Unknown Error, status: {code}, reason: {reason}")
+      Email.admin_alert("ICBC Notifier Admin Alert : Service Crash", f"status: {code}, reason: {reason}")
       exit()
 
     time.sleep(constants.SLEEP_TIME)

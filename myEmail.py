@@ -4,8 +4,8 @@ import private
 from resultParser import ResultParser
 
 class Email:
-  @staticmethod
-  def message(to, subject, text):
+  @staticmethod 
+  def message(to, subject, formatted_body):
     port = 465
     context = ssl.create_default_context()
 
@@ -17,9 +17,17 @@ From: %s
 Subject: %s
 
 %s
-      """ % (private.SENDER_EMAIL, subject, Email.build_body(text))
+      """ % (private.SENDER_EMAIL, subject, formatted_body)
 
       server.sendmail(private.SENDER_EMAIL, to, email_text)
+
+  @staticmethod
+  def appointment_message(to, subject, text):
+    Email.message(to, subject, Email.build_body(text))
+  
+  @staticmethod
+  def admin_alert(subject, message):
+    Email.message(private.ADMIN_EMAILS, subject, message)
 
   @staticmethod
   def build_body(text):
@@ -28,9 +36,8 @@ Subject: %s
     nl = "\n"
 
     return f"There are {count} appointments available.{nl}{nl.join(dates)}"
-
-
   
 if __name__ == "__main__":
   from test import TEST_TEXT
-  Email.message(private.RECEIVER_EMAILS, "Test", TEST_TEXT)
+  Email.appointment_message(private.ADMIN_EMAILS, "Test", TEST_TEXT)
+  Email.admin_alert("Service failed", "service threw a 500 and exited.")
