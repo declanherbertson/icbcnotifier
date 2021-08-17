@@ -1,4 +1,6 @@
 import datetime
+from backports.datetime_fromisoformat import MonkeyPatch
+MonkeyPatch.patch_fromisoformat()
 import pytz
 
 def ymd_format(d):
@@ -15,3 +17,7 @@ def tomorrow():
 
 def timestamp():
   return ymdhm_format(now())
+
+def timeDeltaInDays(day_str):
+  return (now() - datetime.datetime.fromisoformat(day_str).replace(tzinfo=pytz.timezone("America/Vancouver"))).days
+  

@@ -6,6 +6,8 @@ class Notify:
   def __init__(self):
     self.con = sl.connect('notifier.db')
     self._refresh_cache()
+    self.refetched = False
+    self.on_start = True
 
   def _parse_user(self, user_tuple):
     return {
@@ -17,6 +19,7 @@ class Notify:
   def _refresh_cache(self):
     self.users = self._get_users()
     self.cached_time = datetime.utcnow()
+    self.refetched = True
 
   def _get_users(self):
     with self.con:
@@ -25,12 +28,18 @@ class Notify:
   def get_users(self):
     if (datetime.utcnow() - self.cached_time).seconds > (CACHE_REFRESH_THRESHOLD * 60):
       self._refresh_cache()
-    return self.users
+      self.refetched = True
+    else:
+      self.refetched = False
+    retval = (self.users, self.on_start or self.refetched)
+    self.on_start = False
+    return retval
 
   def get_email_list(self):
-    return [user['email'] for user in self.get_users()]
+    return [user['email'] for user in self.get_users()[0]]
   
 if __name__ == "__main__":
   n = Notify()
+  print(n.get_users())
   print(n.get_users())
   print(n.get_email_list())

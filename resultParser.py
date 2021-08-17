@@ -1,25 +1,38 @@
 import json
-from constants import POSITION_LOOKUP
+from constants import POSITION_LOOKUP, DATE_OPTIONS_ALL, DATE_OPTIONS_WEEK, DATE_OPTIONS_MONTH
+import myTime
 
 class ResultParser:
   @classmethod
-  def _get_json(cls, text):
+  def get_text(cls, json_value):
+    return json.dumps(json_value)
+
+  @classmethod
+  def get_json(cls, text, filter_opts=None):
     try:
-      return json.loads(text)
+      json_value = json.loads(text)
+      if filter_opts is None:
+        return json_value
+      date_option = filter_opts.get('date', DATE_OPTIONS_ALL)
+      if date_option == DATE_OPTIONS_ALL:
+        return json_value
+      elif date_option == DATE_OPTIONS_WEEK:
+        return [v for v in json_value if myTime.timeDeltaInDays(v['appointmentDt']['date']) <= 7]
+      elif date_option == DATE_OPTIONS_MONTH:
+        return [v for v in json_value if myTime.timeDeltaInDays(v['appointmentDt']['date']) <= 31]
+      else:
+        raise ValueError('Invalid date option')
     except:
       return []
 
   @classmethod
-  def get_num_appointments(cls, text, filterOpts=None):
-    appointmentJson = cls._get_json(text)
-    if filterOpts is None:
-      return len(appointmentJson)
-    # TODO add options
-    raise NotImplemented("filterOpts not implemented")
+  def get_num_appointments(cls, text, filter_opts=None):
+    appointmentJson = cls.get_json(text, filter_opts)
+    return len(appointmentJson)
   
   @classmethod
-  def get_available_times(cls, text):
-    json_value = cls._get_json(text)
+  def get_available_times(cls, text, filter_opts=None):
+    json_value = cls.get_json(text, filter_opts)
     return [f"{v['appointmentDt']['dayOfWeek'][:3]} {v['appointmentDt']['date']}, {v['startTm']}-{v['endTm']} at {POSITION_LOOKUP[v['posId']]}" for v in json_value]
 
 

@@ -5,6 +5,11 @@ POSITION_LOOKUP = {
   2: 'Burnaby',
   274: 'Wayburne Drive'
 }
+
+DATE_OPTIONS_WEEK = 'week'
+DATE_OPTIONS_MONTH = 'month'
+DATE_OPTIONS_ALL = 'all'
+
 SLEEP_TIME = 30
 
 ignoreReserveTime = False
