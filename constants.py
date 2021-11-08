@@ -11,8 +11,11 @@ DATE_OPTIONS_MONTH = 'month'
 DATE_OPTIONS_ALL = 'all'
 
 SLEEP_TIME = 30
+# SLEEP_TIME = 5 # Test code
 
 ignoreReserveTime = False
+# ignoreReserveTime = True # Test code
+
 examType = "7-R-1"
 aPosID = 9
 prfDaysOfWeek = "[0,1,2,3,4,5,6]"

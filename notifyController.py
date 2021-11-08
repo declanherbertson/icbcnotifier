@@ -30,8 +30,10 @@ class NotifyController:
   def _update_maps(self, users, refetched):
     if not refetched:
       return
+    # groups bulk notifications
     user_map = {}
-    for user in users:
+    standard_users = [user for user in users if 'range' not in user['date']]
+    for user in standard_users:
       for location in user['locations']:
         if location not in user_map:
           user_map[location] = {}
@@ -40,9 +42,12 @@ class NotifyController:
         user_map[location][user['date']].append(user['email'])
     self.user_map = user_map
 
+    # individual range notifications
+    self.range_users = [user for user in users if 'range' in user['date']]
   
   def notify_users(self, loc_id, appointment_text):
     self._update_maps(*self.notify.get_users())
+    # notify bulk users
     for date_option in self.user_map[str(loc_id)]:
       filtered_appointments_text = ResultParser.get_text(ResultParser.get_json(appointment_text, { 'date': date_option }))
       if ResultParser.get_num_appointments(filtered_appointments_text) > 0 and len(self.user_map[loc_id][date_option]) > 0:
@@ -52,6 +57,8 @@ class NotifyController:
           f"ICBC Appointments Available at {POSITION_LOOKUP[int(loc_id)]}",
           filtered_appointments_text
         )
+    #TODO add range user support
+
 
 if __name__ == "__main__":
   from test import TEST_TEXT

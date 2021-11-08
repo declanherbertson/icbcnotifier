@@ -14,7 +14,12 @@ class ResultParser:
       if filter_opts is None:
         return json_value
       date_option = filter_opts.get('date', DATE_OPTIONS_ALL)
-      if date_option == DATE_OPTIONS_ALL:
+      range_option = filter_opts.get('range', None)
+      if range_option is not None:
+        r1, r2 = range_option.split(':')[1:]
+        # print(f'comparing {r1} and {r2} to {[v["appointmentDt"]["date"] for v in json_value if v["appointmentDt"]["date"] >= r1 and v["appointmentDt"]["date"] <= r2]}')
+        return [v for v in json_value if v['appointmentDt']['date'] >= r1 and v['appointmentDt']['date'] <= r2]
+      elif date_option == DATE_OPTIONS_ALL:
         return json_value
       elif date_option == DATE_OPTIONS_WEEK:
         return [v for v in json_value if myTime.timeDeltaInDays(v['appointmentDt']['date']) <= 7]

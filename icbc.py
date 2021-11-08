@@ -9,6 +9,7 @@ from notify import Notify
 def main():
   overview_logger = Logger(myTime.ymd_format(myTime.now()))
   details_logger = Logger(f"details-{myTime.ymd_format(myTime.now())}")
+  error_logger = Logger(f"errors-{myTime.ymd_format(myTime.now())}")
   notifier = Notify()
   last_count = 0
   bearer_token = ''
@@ -18,15 +19,18 @@ def main():
       overview_logger.log("Refresh Login")
       bearer_token = get_bearer_token()
     elif code == 200:
-      count = ResultParser.get_num_appointments(text)
+      #TODO use notifyController to filter and dispatch messages
+      filtered_appointments_text_json = ResultParser.get_json(text, { 'range': private.PERSONAL_DATE_RANGE })
+      filtered_appointments_text = ResultParser.get_text(filtered_appointments_text_json)
+      count = ResultParser.get_num_appointments(filtered_appointments_text)
       overview_logger.log(f"Appointments Available: {count}")
       if count > last_count:
-        details_logger.log(text)
-        Email.appointment_message(notifier.get_email_list(), "ICBC Appointments Available", text)
+        details_logger.log(filtered_appointments_text)
+        Email.appointment_message(notifier.get_email_list(), "ICBC Appointments Available", filtered_appointments_text, logger=error_logger)
       last_count = count
     else:
-      overview_logger.log(f"Unknown Error, status: {code}, reason: {reason}")
-      Email.admin_alert("ICBC Notifier Admin Alert : Service Crash", f"status: {code}, reason: {reason}")
+      error_logger.log(f"Unknown Error, status: {code}, reason: {reason}")
+      Email.admin_alert("ICBC Notifier Admin Alert : Service Crash", f"status: {code}, reason: {reason}", logger=error_logger)
       exit()
 
     time.sleep(constants.SLEEP_TIME)
