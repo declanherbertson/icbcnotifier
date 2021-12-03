@@ -1,16 +1,16 @@
-import myTime, constants, private
+import myTime, constants
 from api import get_bearer_token, get_available_appointments
 from myEmail import Email
 import time
 from logger import Logger
 from resultParser import ResultParser
-from notify import Notify
+from users import Users
 
 def main():
   overview_logger = Logger(myTime.ymd_format(myTime.now()))
   details_logger = Logger(f"details-{myTime.ymd_format(myTime.now())}")
   error_logger = Logger(f"errors-{myTime.ymd_format(myTime.now())}")
-  notifier = Notify()
+  users = Users()
   last_count = 0
   bearer_token = ''
   while (True):
@@ -19,14 +19,13 @@ def main():
       overview_logger.log("Refresh Login")
       bearer_token = get_bearer_token()
     elif code == 200:
-      #TODO use notifyController to filter and dispatch messages
-      filtered_appointments_text_json = ResultParser.get_json(text, { 'range': private.PERSONAL_DATE_RANGE })
+      filtered_appointments_text_json = ResultParser.get_json(text, constants.APPOINTMENT_RANGE)
       filtered_appointments_text = ResultParser.get_text(filtered_appointments_text_json)
       count = ResultParser.get_num_appointments(filtered_appointments_text)
       overview_logger.log(f"Appointments Available: {count}")
       if count > last_count:
         details_logger.log(filtered_appointments_text)
-        Email.appointment_message(notifier.get_email_list(), "ICBC Appointments Available", filtered_appointments_text, logger=error_logger)
+        Email.appointment_message(users.get_email_list(), "ICBC Appointments Available", filtered_appointments_text, logger=error_logger)
       last_count = count
     else:
       error_logger.log(f"Unknown Error, status: {code}, reason: {reason}")

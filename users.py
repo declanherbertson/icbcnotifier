@@ -2,7 +2,7 @@ from datetime import datetime
 import sqlite3 as sl
 CACHE_REFRESH_THRESHOLD = 5
 
-class Notify:
+class Users:
   def __init__(self):
     self.con = sl.connect('notifier.db')
     self._refresh_cache()
@@ -12,8 +12,6 @@ class Notify:
   def _parse_user(self, user_tuple):
     return {
       'email': user_tuple[1],
-      'date': user_tuple[2],
-      'locations': user_tuple[3].split('-')
     }
 
   def _refresh_cache(self):
@@ -39,7 +37,7 @@ class Notify:
     return [user['email'] for user in self.get_users()[0]]
   
 if __name__ == "__main__":
-  n = Notify()
+  n = Users()
   print(n.get_users())
   print(n.get_users())
   print(n.get_email_list())

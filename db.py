@@ -6,18 +6,16 @@ def setup():
     con.execute("""
         CREATE TABLE USER (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            email TEXT,
-            date TEXT,
-            locations TEXT
+            email TEXT
         );
     """)
 
 def populate_dummy_data():
-  sql = 'INSERT INTO USER (id, email, date, locations) values(?, ?, ?, ?)'
+  sql = 'INSERT INTO USER (id, email) values(?, ?)'
   data = [
-      (1, 'test@gmail.com', 'week', '9'),
-      (2, 'test@gmail.com', 'all', '9'),
-      (3, 'test@hotmail.com', 'week', '9'),
+      (1, 'test@msg.telus.com'),
+      (2, 'test@gmail.com'),
+      (3, 'test@hotmail.com'),
   ]
   con = sl.connect('notifier.db')
   with con:
