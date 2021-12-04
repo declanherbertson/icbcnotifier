@@ -1,9 +1,6 @@
 # TITLE
 Notifier Bot For ICBC Road Tests
 
-# NOTE
-experimental changes to support multiple user preferences and batch emails if on the scalibility branch
-
 # USAGE
 1) Setup SQLITE3 database with db.py (you can change the populate dummy data to populate your own email / email -> phone number value ie '<number>@msg.telus.com')
 2) create private.py
